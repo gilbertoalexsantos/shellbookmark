@@ -70,8 +70,8 @@ function list {
 
 function delete {
     alias=$1
-    for ((i = 0; i < ${#lines[@]}; i++)); do
-        IFS=' ' read -r alias_ path_ <<< ${lines[$i]}
+    for ((i = 0; i < ${#lines_[@]}; i++)); do
+        IFS=' ' read -r alias_ path_ <<< ${lines_[$i]}
         if [ $alias == $alias_ ]; then
             temp=${i}
             let temp+=1
