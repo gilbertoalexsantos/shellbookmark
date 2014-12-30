@@ -1,0 +1,18 @@
+#!/bin/bash
+
+_b() {
+  local cur=${COMP_WORDS[COMP_CWORD]}
+
+  local lines=()
+  while read p; do lines+=("$p"); done < $HOME"/.mybookmark"
+
+  local words=()
+  for ((i = 0; i < ${#lines[@]}; i++)); do
+    IFS=' ' read -r alias path <<< ${lines[$i]}
+    words+=("$alias")
+  done
+
+  COMPREPLY=( $(compgen -W "${words[*]}" -- $cur) )
+}
+
+complete -F _b b
