@@ -36,11 +36,11 @@ function save {
         IFS=' ' read -r alias_ path_ <<< ${lines[$i]}
         if [ $alias == $alias_ ]; then
             echo "alias already exists"
-            exit
+            return
         fi
         if [ $path == $path_ ]; then
             echo "directory already exists"
-            exit
+            return
         fi        
     done
     
@@ -57,7 +57,7 @@ function list {
 
     if [ $maxLenAlias == 0 ]; then
         echo "empty"
-        exit
+        return
     fi
     
     for ((i = 0; i < ${#lines[@]}; i++)); do
@@ -73,14 +73,14 @@ case "$1" in
        ;;
     g) if [ -z $2 ]; then
            echo "you need to specify the alias"
-           exit
+           return
        else
            go $2
        fi
        ;;
     s) if [ -z $2 ]; then
            echo "you need to specify the alias"
-           exit
+           return
        else
            save $2
        fi
