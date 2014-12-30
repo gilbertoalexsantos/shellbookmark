@@ -68,6 +68,20 @@ function list {
     done
 }
 
+function delete {
+    alias=$1
+    for ((i = 0; i < ${#lines[@]}; i++)); do
+        IFS=' ' read -r alias_ path_ <<< ${lines[$i]}
+        if [ $alias == $alias_ ]; then
+            temp=${i}
+            let temp+=1
+            sed -i "" "${temp}d" $filepath
+            return
+        fi
+    done
+    echo "alias doesn't exist"
+}
+
 case "$1" in
     l) list
        ;;
@@ -85,9 +99,16 @@ case "$1" in
            save $2
        fi
        ;;
+    d) if [ -z $2 ]; then
+           echo "you need to specify the alias"
+           return
+       else
+           delete $2
+       fi
+       ;;
     help) echo "'g <alias>' => go to the path of the alias"
           echo "'l'         => list all bookmarks"
           echo "'s <alias>' => save the actual dir with the alias name"
           ;;
-    *) echo "Flag doesn't exists. Use 'help' to see the flags"
+    *) echo "flag doesn't exists. use 'help' to see the flags"
 esac
