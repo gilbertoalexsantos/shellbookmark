@@ -54,6 +54,11 @@ function list {
         IFS=' ' read -r alias_ path_ <<< ${lines[$i]}
         if [ ${#alias_} -ge $maxLenAlias ]; then maxLenAlias=${#alias_}; fi
     done
+
+    if [ $maxLenAlias == 0 ]; then
+        echo "empty"
+        exit
+    fi
     
     for ((i = 0; i < ${#lines[@]}; i++)); do
         IFS=' ' read -r alias_ path_ <<< ${lines[$i]}
