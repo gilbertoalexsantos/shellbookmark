@@ -38,7 +38,7 @@ And vualá!
 
 There're five flags:
 * 'g alias' => go to the path corresponding to the alias
-* 's alias' => save the actual path with name <alias>
+* 's alias' => save the actual path with name alias
 * 'd alias' => delete the bookmark with name alias
 * 'l'         => list all bookmarks
 * 'help'      => prints a ugly help text...
