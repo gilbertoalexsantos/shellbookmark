@@ -26,7 +26,7 @@ see the results... and we want that the shell change the directory, right?)
 
 ## Bash Completion
 
-Put the bash completion file somewhere (my file's in $HOME/.bash_completion.d)
+Put the bash completion file somewhere (my file's in $HOME/.bash\_completion.d)
 
 And add to your bash\_profile:
 
