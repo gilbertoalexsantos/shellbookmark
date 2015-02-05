@@ -9,47 +9,54 @@ arg=$2
 # Creating the file, if doesn't exists
 if [ ! -a $filepath ]; then `touch $filepath`; fi
 
-# Putting the file lines in the array lines, and sorting the array
+# Creating two variables: lines_ and lines
+# lines_ has all alias/path unsorted (helpful in delete)
+# lines  has all alias sorted
 declare -a lines_=()
 while read p; do lines_+=("$p"); done < $filepath
-IFS=$'\n' lines=($(sort <<<"${lines_[*]}"))
+IFS=$'\n' lines=($(sort <<< "${lines_[*]}"))
 
+# @params
+#   $1 => alias
 function go {
-    finded=false
+    found=false
     for ((i = 0; i < ${#lines[@]}; i++)); do
         IFS=' ' read -r alias_ path_ <<< ${lines[$i]}
         if [ $1 == $alias_ ]; then
-            finded=true
+            found=true
             cd $path_;
             break
         fi
     done
-    if [ $finded == false ]; then echo "alias doesn't exists"; fi
+    if [ $found == false ]; then echo "alias doesn't exist"; fi
 }
 
+# @params
+#   $1 => alias
+#   $2 => path
 function save {
     alias=$1
-    path=`pwd`
+    path=$2
 
     # Checking if already exists alias or directory
     for ((i = 0; i < ${#lines[@]}; i++)); do
         IFS=' ' read -r alias_ path_ <<< ${lines[$i]}
         if [ $alias == $alias_ ]; then
-            echo "alias already exists"
+            echo "alias already exist"
             return
         fi
         if [ $path == $path_ ]; then
-            echo "directory already exists"
+            echo "directory already exist"
             return
-        fi        
+        fi
     done
     
-    echo $1" "`pwd` >> $filepath
+    echo $alias" "$path >> $filepath
 }
 
 function list {
+    # Getting the max length of alias (to use in padding)    
     maxLenAlias=0
-    # Getting the max length of alias (to use in padding)
     for ((i = 0; i < ${#lines[@]}; i++)); do
         IFS=' ' read -r alias_ path_ <<< ${lines[$i]}
         if [ ${#alias_} -ge $maxLenAlias ]; then maxLenAlias=${#alias_}; fi
@@ -68,6 +75,8 @@ function list {
     done
 }
 
+# @params
+#   $1 => alias
 function delete {
     alias=$1
     for ((i = 0; i < ${#lines_[@]}; i++)); do
@@ -82,33 +91,32 @@ function delete {
     echo "alias doesn't exist"
 }
 
-case "$1" in
+case $1 in
     l) list
        ;;
     g) if [ -z $2 ]; then
-           echo "you need to specify the alias"
-           return
+           cd $homepath
        else
            go $2
        fi
        ;;
     s) if [ -z $2 ]; then
            echo "you need to specify the alias"
-           return
        else
-           save $2
+           save $2 `pwd`
        fi
        ;;
     d) if [ -z $2 ]; then
            echo "you need to specify the alias"
-           return
        else
            delete $2
        fi
        ;;
-    help) echo "'g <alias>' => go to the path of the alias"
-          echo "'l'         => list all bookmarks"
-          echo "'s <alias>' => save the actual dir with the alias name"
-          ;;
+    help)
+        echo "'l'          => list all bookmarks"        
+        echo "'g' <alias>' => go to the path of the alias"
+        echo "'s' <alias>' => save the actual dir with the alias name"
+        echo "'d' <alias>  => delete the alias bookmark"
+        ;;
     *) echo "flag doesn't exists. use 'help' to see the flags"
 esac
